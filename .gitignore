@@ -1,0 +1,5 @@
+*.iml
+/venv
+.idea
+*.yml
+*.csv
