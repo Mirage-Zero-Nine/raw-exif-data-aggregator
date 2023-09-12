@@ -3,14 +3,14 @@ import csv
 import exifread
 
 
-def collect_exif_data(photo_directory):
+def collect_exif_data(config):
     exif_data_list = []
     total_count = 0
     # Iterate through subdirectories
-    for root, dirs, files in os.walk(photo_directory):
+    for root, dirs, files in os.walk(config.file_paths.photo_directory):
         count = 0
         for file in files:
-            if file.lower().endswith('.arw'):
+            if file.lower() in config.raw_file_info.raw_file_suffix:
                 count += 1
                 # Construct the full path to the file
                 file_path = os.path.join(root, file)

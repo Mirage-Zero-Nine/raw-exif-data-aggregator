@@ -29,9 +29,9 @@ def create_datatime_object(input_datetime):
     return datetime.strptime(input_datetime, '%Y:%m:%d %H:%M:%S')
 
 
-def print_exif(photo_directory):
+def print_exif(config):
     # Iterate through subdirectories
-    for root, dirs, files in os.walk(photo_directory):
+    for root, dirs, files in os.walk(config.file_paths.photo_directory):
         for file in files:
             if file.endswith('.arw'):
                 # Construct the full path to the file
@@ -62,12 +62,12 @@ def print_exif(photo_directory):
                 print()
 
 
-def generate_lens_distribution_report(photo_directory):
+def generate_lens_distribution_report(config):
     # Dictionary to store lens distribution
     lens_distribution = {}
 
     # Iterate through subdirectories
-    for root, dirs, files in os.walk(photo_directory):
+    for root, dirs, files in os.walk(config.file_paths.photo_directory):
         print(f"Collecting data from {os.path.basename(os.path.normpath(root))}")
 
         for file in files:
@@ -101,8 +101,8 @@ def convert_aperture_to_readable_format(aperture):
         return " ƒ/{}".format(aperture)
 
 
-def read_exif_data_from_csv(csv_file):
-    with open(csv_file, mode='r') as file:
+def read_exif_data_from_csv(config):
+    with open(config.export_path.export_csv_file_name, mode='r') as file:
         reader = csv.DictReader(file)
         exif_data_list = [row for row in reader]
     return exif_data_list

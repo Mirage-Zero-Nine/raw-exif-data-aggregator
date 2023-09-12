@@ -26,6 +26,11 @@ class PlotSavePath:
         self.plot_result_save_path = plot_result_save_path
 
 
+class RawFileInfo:
+    def __init__(self, raw_file_suffix):
+        self.raw_file_suffix = set(raw_file_suffix)
+
+
 class ConfigObject:
     def __init__(self, config_file):
         with open(config_file, 'r') as file:
@@ -42,3 +47,4 @@ class ConfigObject:
             config_data['ExportFileName']['iso_count']
         )
         self.plot_save_path = PlotSavePath(config_data['PlotSavePath']['plot_result_save_path'])
+        self.raw_file_info = RawFileInfo(config_data['RawFileInfo']['raw_file_suffix'])
