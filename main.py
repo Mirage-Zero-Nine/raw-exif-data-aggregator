@@ -1,19 +1,24 @@
-import yaml
+import date_distribution
 import utilities
 import export_data_to_csv
-import read_data_from_csv
+import config.config_object as config
 
-# Read the configuration file
-with open('config/config.yml', 'r') as file:
-    config = yaml.safe_load(file)
+# build config object
+config = config.ConfigObject('config/config.yml')
 
 
 def get_exif_data():
-    photo_directory = config['FilePaths']['photo_directory']
+    photo_directory = config.file_paths.photo_directory
     utilities.generate_lens_distribution_report(photo_directory)
 
 
+def generate_base_csv_file():
+    exif_data_list = export_data_to_csv.collect_exif_data(config.file_paths.photo_directory)
+    export_data_to_csv.write_exif_to_csv(config, exif_data_list)
+
+
 if __name__ == '__main__':
-    # exif_data_list = export_data_to_csv.collect_exif_data(config['FilePaths']['photo_directory'])
-    # export_data_to_csv.write_exif_to_csv(exif_data_list)
-    read_data_from_csv.generate_statistics_report(config)
+    # read_data_from_csv.generate_statistics_report(config)
+    data_list = utilities.read_exif_data_from_csv(config.export_path.export_csv_file_name)
+    date_distribution.draw_photo_distribution(config, data_list)
+    date_distribution.draw_photo_distribution_by_month(config, data_list)

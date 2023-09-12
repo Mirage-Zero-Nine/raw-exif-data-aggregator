@@ -1,6 +1,7 @@
 from datetime import datetime
 import os
 import exifread
+import csv
 
 
 def convert_aperture(aperture):
@@ -92,3 +93,16 @@ def generate_lens_distribution_report(photo_directory):
         print(f"Lens Model: {lens_model}, Count: {count}")
 
 
+def convert_aperture_to_readable_format(aperture):
+    if '/' in aperture:
+        numerator, denominator = aperture.split('/')
+        return " ƒ/{:.1f}".format(float(numerator) / float(denominator))
+    else:
+        return " ƒ/{}".format(aperture)
+
+
+def read_exif_data_from_csv(csv_file):
+    with open(csv_file, mode='r') as file:
+        reader = csv.DictReader(file)
+        exif_data_list = [row for row in reader]
+    return exif_data_list

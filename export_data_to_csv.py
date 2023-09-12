@@ -1,23 +1,17 @@
 import os
 import csv
 import exifread
-import yaml
-
-
-def get_config():
-    with open('config/config.yml', 'r') as file:
-        config = yaml.safe_load(file)
-    return config
 
 
 def collect_exif_data(photo_directory):
     exif_data_list = []
-
+    total_count = 0
     # Iterate through subdirectories
     for root, dirs, files in os.walk(photo_directory):
-        print(f"Collecting data from {os.path.basename(os.path.normpath(root))}")
+        count = 0
         for file in files:
             if file.lower().endswith('.arw'):
+                count += 1
                 # Construct the full path to the file
                 file_path = os.path.join(root, file)
 
@@ -25,29 +19,29 @@ def collect_exif_data(photo_directory):
                 with open(file_path, 'rb') as f:
                     tags = exifread.process_file(f)
 
-                # Get lens model
-                lens_model = tags.get('EXIF LensModel', 'Unknown')
-
                 # Collect EXIF data
                 exif_data = {
-                    'File': file_path,
+                    'File': file,
+                    'Path': file_path,
                     'Camera Make': str(tags.get('Image Make', 'Unknown')),
                     'Camera Model': str(tags.get('Image Model', 'Unknown')),
                     'Focal Length': str(tags.get('EXIF FocalLength', 'Unknown')),
                     'Aperture': str(tags.get('EXIF FNumber', 'Unknown')),
                     'Shutter Speed': str(tags.get('EXIF ExposureTime', 'Unknown')),
                     'ISO': str(tags.get('EXIF ISOSpeedRatings', 'Unknown')),
-                    'Lens Model': str(lens_model),
+                    'Lens Model': str(tags.get('EXIF LensModel', 'Unknown')),
                     'Date Taken': str(tags.get('EXIF DateTimeOriginal', 'Unknown'))
                 }
 
                 exif_data_list.append(exif_data)
-
+        print(f"Found {count} RAW files in {os.path.basename(os.path.normpath(root))}")
+        total_count += count
+    print(f"{total_count} RAW files found.")
     return exif_data_list
 
 
-def write_exif_to_csv(exif_data_list):
-    csv_path = f'{get_config()["ExportPath"]["export_csv_file_name"]}'
+def write_exif_to_csv(config, exif_data_list):
+    csv_path = f'{config.export_path.export_csv_file_name}'
     with open(csv_path, mode='w', newline='') as csv_file:
         fieldnames = exif_data_list[0].keys()
         writer = csv.DictWriter(csv_file, fieldnames=fieldnames)

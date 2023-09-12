@@ -3,3 +3,6 @@
 .idea
 *.yml
 *.csv
+.DS_Store
+__pycache__/
+csv
