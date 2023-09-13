@@ -87,7 +87,7 @@ def write_to_csv(first_row, data_map, file_name):
 
 def generate_statistics_report(config):
     # Read EXIF data from the CSV file
-    exif_data_list = utilities.read_exif_data_from_csv(config.export_path.export_csv_file_name)
+    exif_data_list = utilities.read_exif_data_from_csv(config)
 
     # Count number of photos taken by camera
     camera_counts = count_photos_by_camera(exif_data_list, config.export_file_name.camera_count)
